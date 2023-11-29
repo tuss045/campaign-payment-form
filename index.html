@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign Payment Form</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+    <style>
+        /* Global styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 15px;
+            display: block;
+            color: #666;
+        }
+
+        input {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: calc(100% - 22px);
+        }
+
+        button {
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Additional styles for sections */
+        .personal-info,
+        .address-details,
+        .campaign-details,
+        .bank-account-details {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #ccc;
+        }
+
+        h2 {
+            color: #ffffff;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #219C90;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        /* E-signature styles */
+        .e-signature {
+            margin-bottom: 40px;
+        }
+
+        #signatureCanvas {
+            border: 2px solid #000;
+            display: block;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            /* Optional: adjust width, height, or other properties */
+        }
+
+        #clearSignature {
+            padding: 10px 15px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #clearSignature:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Campaign Payment Form</h1>
+        <form method="POST" action="https://script.google.com/macros/s/AKfycbxPJC5QeEOii9gqomqv-OiX_h6YXEB1DUHverE9ZrZiG_XyWBGtMpvYkyLqIhsSbGpp/exec">
+            <div class="personal-info">
+                <h2>Personal Information</h2>
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" required>
+
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="address-details">
+                <h2>Address Details</h2>
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" required>
+
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" required>
+
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" required>
+
+                <label for="pincode">Pin Code:</label>
+                <input type="text" id="pincode" name="pincode" required>
+
+                <label for="mobile">Mobile Number:</label>
+                <input type="text" id="mobile" name="mobile" required>
+            </div>
+
+            <div class="campaign-details">
+                <h2>Campaign Details</h2>
+                <label for="platformBrandAmount">Platform:</label>
+                <input type="text" id="platformBrandAmount" name="platformBrandAmount" required>
+
+                <label for="Brand">Brand:</label>
+                <input type="text" id="Brand" name="Brand" required>
+
+                <label for="Amount">Amount:</label>
+                <input type="text" id="Amount" name="Amount" required>
+            </div>
+
+            <div class="bank-account-details">
+                <h2>Bank Account Details</h2>
+                <label for="payName">Pay Name:</label>
+                <input type="text" id="payName" name="payName" required>
+
+                <label for="bankAccountNumber">Bank Account Number:</label>
+                <input type="text" id="bankAccountNumber" name="bankAccountNumber" required>
+
+                <label for="ifscCode">IFSC Code:</label>
+                <input type="text" id="ifscCode" name="ifscCode" required>
+
+                <label for="panNumber">PAN Number:</label>
+                <input type="text" id="panNumber" name="panNumber" required>
+
+                <label for="profileLink">Profile Link:</label>
+                <input type="text" id="profileLink" name="profileLink" required>
+            </div>
+
+            <div class="e-signature">
+                <h2>Electronic Signature</h2>
+                <canvas id="signatureCanvas" width="400" height="200"></canvas>
+                <button id="clearSignature">Clear</button>
+                <input type="hidden" id="signatureData" name="signatureData">
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('signatureCanvas');
+        const signaturePad = new SignaturePad(canvas);
+
+        const clearButton = document.getElementById('clearSignature');
+        clearButton.addEventListener('click', function () {
+            signaturePad.clear();
+        });
+
+        // Add an event listener to the form submission
+        document.querySelector('form').addEventListener('submit', function (event) {
+            // Prevent the form from submitting initially
+            event.preventDefault();
+
+            // Get the signature data as a base64-encoded string
+            const signatureData = signaturePad.toDataURL();
+
+            // Set the signature data to the hidden input field
+            document.getElementById('signatureData').value = signatureData;
+
+            // Submit the form programmatically
+            this.submit();
+        });
+    </script>
+</body>
+
+</html>
